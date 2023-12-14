@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+     <meta charset="UTF-8">
+    <title>Sistema de Gestión de Solicitudes</title>
+    <style>
+        /* Estilos CSS */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 24px; /* Tamaño de la letra del encabezado */
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        input[type="text"], input[type="date"] {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 8px;
+            margin: 5px 0;
+            box-sizing: border-box;
+            font-size: 18px; /* Tamaño de la letra del cuadro de especificaciones */
+        }
+
+        input[type="submit"] {
+            padding: 10px 15px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        /* Estilos para la tabla */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+        }
+        th, td {
+            border: 1px solid #dddddd;
+            text-align: left;
+            padding: 8px;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+    </style>
+</head>
+<body>
+    <h1>Sistema de Gestión de Solicitudes</h1>
+    
+    <form id="solicitudForm">
+        <label for="tipoArte">Tipo de Arte:</label>
+        <input type="text" id="tipoArte" name="tipoArte" required><br>
+
+        <label for="fechaLimite">Fecha Límite:</label>
+        <input type="date" id="fechaLimite" name="fechaLimite" required><br>
+
+        <label for="especificaciones">Especificaciones:</label><br>
+        <textarea id="especificaciones" name="especificaciones" rows="4" required></textarea><br>
+
+        <label for="plataforma">Plataforma:</label>
+        <input type="text" id="plataforma" name="plataforma" required><br>
+
+        <input type="submit" value="Enviar Solicitud">
+    </form>
+
+    <table id="solicitudesTable">
+        <thead>
+            <tr>
+                <th>Tipo de Arte</th>
+                <th>Fecha Límite</th>
+                <th>Especificaciones</th>
+                <th>Plataforma</th>
+            </tr>
+        </thead>
+        <tbody id="solicitudesBody">
+            <!-- Aquí se mostrarán las solicitudes -->
+        </tbody>
+    </table>
+
+    <script>
+  const formulario = document.getElementById('solicitudForm');
+        const tablaSolicitudes = document.getElementById('solicitudesTable');
+
+        formulario.addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const tipoArte = document.getElementById('tipoArte').value;
+            const fechaLimite = document.getElementById('fechaLimite').value;
+            const especificaciones = document.getElementById('especificaciones').value;
+            const plataforma = document.getElementById('plataforma').value;
+
+            const nuevaSolicitud = {
+                tipoArte,
+                fechaLimite,
+                especificaciones,
+                plataforma
+            };
+
+            // Obtener solicitudes existentes del localStorage
+            const solicitudes = JSON.parse(localStorage.getItem('solicitudes')) || [];
+
+            // Agregar la nueva solicitud al arreglo
+            solicitudes.push(nuevaSolicitud);
+
+            // Guardar en el localStorage
+            localStorage.setItem('solicitudes', JSON.stringify(solicitudes));
+
+            // Limpiar formulario
+            formulario.reset();
+
+            // Mostrar las solicitudes en la tabla
+            renderizarSolicitudes();
+        });
+
+        // Función para mostrar las solicitudes en la tabla
+        function renderizarSolicitudes() {
+            const solicitudes = JSON.parse(localStorage.getItem('solicitudes')) || [];
+
+            tablaSolicitudes.innerHTML = `
+                <thead>
+                    <tr>
+                        <th>Tipo de Arte</th>
+                        <th>Fecha Límite</th>
+                        <th>Especificaciones</th>
+                        <th>Plataforma</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    ${solicitudes.map(solicitud => `
+                        <tr>
+                            <td>${solicitud.tipoArte}</td>
+                            <td>${solicitud.fechaLimite}</td>
+                            <td>${solicitud.especificaciones}</td>
+                            <td>${solicitud.plataforma}</td>
+                        </tr>
+                    `).join('')}
+                </tbody>
+            `;
+        }
+
+        // Mostrar las solicitudes al cargar la página
+        renderizarSolicitudes();
+
+        // Aquí podrías añadir tu lógica JavaScript para enviar/recibir datos del servidor y actualizar la tabla
+        // Por ejemplo, puedes usar Fetch API o XMLHttpRequest para enviar datos al servidor y actualizar la tabla con los resultados obtenidos
+
+
+
+    </script>
+</body>
+</html>
